@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/hpcloud/tail"
 	"net/http"
+	"os/user"
 	"strconv"
 	"sync"
 )
@@ -20,14 +21,14 @@ const (
 	indexer        = "indexer"
 	persist        = "persist"
 	event          = "event"
+	serverLogPath  = "/.xray/logs/xray_server.log"
+	indexerLogPath = "/.xray/logs/xray_indexer.log"
+	eventLogPath   = "/.xray/logs/xray_event.log"
+	persistLogPath = "/.xray/logs/xray_persist.log"
 	serverTag      = "[XRAY-SERVER] "
-	serverLogPath  = "/Users/chenk/.xray/logs/xray_server.log"
 	indexerTag     = "[XRAY-INDEXER] "
-	indexerLogPath = "/Users/chenk/.xray/logs/xray_indexer.log"
 	persistTag     = "[XRAY-PERSIST] "
-	persistLogPath = "/Users/chenk/.xray/logs/xray_persist.log"
 	eventTag       = "[XRAY-EVENT] "
-	eventLogPath   = "/Users/chenk/.xray/logs/xray_event.log"
 )
 
 func main() {
@@ -55,27 +56,31 @@ func logData(w http.ResponseWriter, req *http.Request) {
 	StartLogging(logProps)
 }
 func PrepareLogSetting(req *http.Request, slp *LoggerProp, logProps []*LoggerProp, ilp *LoggerProp, elp *LoggerProp, plp *LoggerProp) []*LoggerProp {
+	userPath, err := user.Current()
+	if err != nil {
+		fmt.Print("Failed to locate login user")
+	}
 	if value := req.URL.Query().Get(server); len(value) > 0 {
 		if hasValue, err := strconv.ParseBool(value); err == nil {
-			slp = &LoggerProp{StartLogging: hasValue, Name: server, Path: serverLogPath, LogTag: serverTag, logChan: quitServer}
+			slp = &LoggerProp{StartLogging: hasValue, Name: server, Path: userPath.HomeDir + serverLogPath, LogTag: serverTag, logChan: quitServer}
 			logProps = append(logProps, slp)
 		}
 	}
 	if value := req.URL.Query().Get(indexer); len(value) > 0 {
 		if hasValue, err := strconv.ParseBool(value); err == nil {
-			ilp = &LoggerProp{StartLogging: hasValue, Name: indexer, Path: indexerLogPath, LogTag: indexerTag, logChan: quitIndexer}
+			ilp = &LoggerProp{StartLogging: hasValue, Name: indexer, Path: userPath.HomeDir + indexerLogPath, LogTag: indexerTag, logChan: quitIndexer}
 			logProps = append(logProps, ilp)
 		}
 	}
 	if value := req.URL.Query().Get(persist); len(value) > 0 {
 		if hasValue, err := strconv.ParseBool(value); err == nil {
-			elp = &LoggerProp{StartLogging: hasValue, Name: persist, Path: persistLogPath, LogTag: persistTag, logChan: quitPersist}
+			elp = &LoggerProp{StartLogging: hasValue, Name: persist, Path: userPath.HomeDir + persistLogPath, LogTag: persistTag, logChan: quitPersist}
 			logProps = append(logProps, elp)
 		}
 	}
 	if value := req.URL.Query().Get(event); len(value) > 0 {
 		if hasValue, err := strconv.ParseBool(value); err == nil {
-			plp = &LoggerProp{StartLogging: hasValue, Name: event, Path: eventLogPath, LogTag: eventTag, logChan: quitEvent}
+			plp = &LoggerProp{StartLogging: hasValue, Name: event, Path: userPath.HomeDir + eventLogPath, LogTag: eventTag, logChan: quitEvent}
 			logProps = append(logProps, plp)
 		}
 	}
