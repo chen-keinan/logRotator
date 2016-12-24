@@ -82,14 +82,14 @@ func PrepareLogSetting(req *http.Request, slp *LoggerProp, logProps []*LoggerPro
 	return logProps
 }
 func StartLogging(logProps []*LoggerProp) {
-	for _, lprop := range logProps {
-		if lprop.StartLogging {
-			if added := addToMapIfNotExist(lprop.Name); added {
-				go TailLogs(lprop.LogTag, lprop.Path, lprop.logChan)
+	for _, lProp := range logProps {
+		if lProp.StartLogging {
+			if added := addToMapIfNotExist(lProp.Name); added {
+				go TailLogs(lProp.LogTag, lProp.Path, lProp.logChan)
 			}
 		} else {
-			removeFromMap(lprop.Name)
-			quitServer <- true
+			removeFromMap(lProp.Name)
+			lProp.logChan <- true
 		}
 	}
 }
