@@ -126,8 +126,7 @@ func removeFromMap(logName string) {
 
 func TailLogs(logName, logPath string, quit chan bool) {
 	t, _ := tail.TailFile(logPath, tail.Config{
-		Follow: true,
-		ReOpen: true})
+		Follow: true, ReOpen: true, Poll: true})
 	for line := range t.Lines {
 		select {
 		case <-quit:
