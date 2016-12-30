@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/hpcloud/tail"
 	"net/http"
+	"os"
 	"os/user"
 	"strconv"
 	"sync"
@@ -126,7 +127,7 @@ func removeFromMap(logName string) {
 
 func TailLogs(logName, logPath string, quit chan bool) {
 	t, _ := tail.TailFile(logPath, tail.Config{
-		Follow: true, ReOpen: true, Poll: true})
+		Follow: true, ReOpen: true, Poll: true, Location: &tail.SeekInfo{Offset: 0, Whence: os.SEEK_END}})
 	for line := range t.Lines {
 		select {
 		case <-quit:
