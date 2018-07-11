@@ -18,18 +18,18 @@ var quitPersist = make(chan bool, 1)
 var quitEvent = make(chan bool, 1)
 
 const (
-	server         = "server"
-	indexer        = "indexer"
-	persist        = "persist"
-	event          = "event"
-	serverLogPath  = "/.xray/logs/xray_server.log"
-	indexerLogPath = "/.xray/logs/xray_indexer.log"
-	eventLogPath   = "/.xray/logs/xray_event.log"
-	persistLogPath = "/.xray/logs/xray_persist.log"
-	serverTag      = "[XRAY-SERVER] "
-	indexerTag     = "[XRAY-INDEXER] "
-	persistTag     = "[XRAY-PERSIST] "
-	eventTag       = "[XRAY-EVENT] "
+	ms1          = "ms1"
+	ms2          = "ms2"
+	ms3          = "ms3"
+	ms4          = "ms4"
+	ms1LogPath   = "/ms1.log"
+	ms2LogPath   = "/ms2.log"
+	ms3LogPath   = "/ms2.log"
+	ms4LogPath   = "/ms4.log"
+	ms1Tag       = "[MS-1] "
+	ms2Tag       =  "[MS-1] "
+	ms3Tag       = "[MS-1] "
+	ms4Tag       = "[MS-1] "
 )
 
 func main() {
