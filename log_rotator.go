@@ -12,10 +12,10 @@ import (
 
 var logMap = make(map[string]string)
 var mu = &sync.Mutex{}
-var quitServer = make(chan bool, 1)
-var quitIndexer = make(chan bool, 1)
-var quitPersist = make(chan bool, 1)
-var quitEvent = make(chan bool, 1)
+var quitm1 = make(chan bool, 1)
+var quitm2 = make(chan bool, 1)
+var quitm3 = make(chan bool, 1)
+var quitm4 = make(chan bool, 1)
 
 const (
 	ms1          = "ms1"
@@ -61,27 +61,27 @@ func PrepareLogSetting(req *http.Request, slp *LoggerProp, logProps []*LoggerPro
 	if err != nil {
 		fmt.Print("Failed to locate login user")
 	}
-	if value := req.URL.Query().Get(server); len(value) > 0 {
+	if value := req.URL.Query().Get(ms1); len(value) > 0 {
 		if hasValue, err := strconv.ParseBool(value); err == nil {
-			slp = &LoggerProp{StartLogging: hasValue, Name: server, Path: userPath.HomeDir + serverLogPath, LogTag: serverTag, logChan: quitServer}
+			slp = &LoggerProp{StartLogging: hasValue, Name: ms1, Path: userPath.HomeDir + ms1LogPath, LogTag: ms1Tag, logChan: quitm1}
 			logProps = append(logProps, slp)
 		}
 	}
-	if value := req.URL.Query().Get(indexer); len(value) > 0 {
+	if value := req.URL.Query().Get(ms2); len(value) > 0 {
 		if hasValue, err := strconv.ParseBool(value); err == nil {
-			ilp = &LoggerProp{StartLogging: hasValue, Name: indexer, Path: userPath.HomeDir + indexerLogPath, LogTag: indexerTag, logChan: quitIndexer}
+			ilp = &LoggerProp{StartLogging: hasValue, Name: ms2, Path: userPath.HomeDir + ms2LogPath, LogTag: ms2Tag, logChan: quitm2}
 			logProps = append(logProps, ilp)
 		}
 	}
-	if value := req.URL.Query().Get(persist); len(value) > 0 {
+	if value := req.URL.Query().Get(ms3); len(value) > 0 {
 		if hasValue, err := strconv.ParseBool(value); err == nil {
-			elp = &LoggerProp{StartLogging: hasValue, Name: persist, Path: userPath.HomeDir + persistLogPath, LogTag: persistTag, logChan: quitPersist}
+			elp = &LoggerProp{StartLogging: hasValue, Name: ms3, Path: userPath.HomeDir + ms3LogPath, LogTag: ms3Tag, logChan: quitm3}
 			logProps = append(logProps, elp)
 		}
 	}
-	if value := req.URL.Query().Get(event); len(value) > 0 {
+	if value := req.URL.Query().Get(ms4); len(value) > 0 {
 		if hasValue, err := strconv.ParseBool(value); err == nil {
-			plp = &LoggerProp{StartLogging: hasValue, Name: event, Path: userPath.HomeDir + eventLogPath, LogTag: eventTag, logChan: quitEvent}
+			plp = &LoggerProp{StartLogging: hasValue, Name: ms4, Path: userPath.HomeDir + ms4LogPath, LogTag: ms4Tag, logChan: quitm4}
 			logProps = append(logProps, plp)
 		}
 	}
